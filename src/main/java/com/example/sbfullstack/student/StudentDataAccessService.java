@@ -67,14 +67,28 @@ public class StudentDataAccessService {
                     email,
                     gender
             );
+
+            //select uid, name from table
+            //uid,    , name
+            //some_uid, john, result set -> student (some_uid, john)
+            //some_uid, maria, result set -> student (some_uid, maria)
+            //some_uid, tendai, result set -> student (some_uid, tendai)
         };
     }
 
-        //select uid, name from table
-        //uid,    , name
-        //some_uid, john, result set -> student (some_uid, john)
-        //some_uid, maria, result set -> student (some_uid, maria)
-        //some_uid, tendai, result set -> student (some_uid, tendai)
-    };
+    boolean isEmailTaken(String email) {
+        String sql = "" +
+                "SELECT EXISTS ( " +
+                " SELECT 1 " +
+                " FROM student " +
+                " WHERE email = ?" +
+                ")";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {email},
+                (resultSet, i) -> resultSet.getBoolean(1)
+        );
+    }
+};
 
 

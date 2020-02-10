@@ -1,8 +1,9 @@
 package com.example.sbfullstack.student;
 
+import com.example.sbfullstack.datasource.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,11 +19,12 @@ public class StudentController {
 
     @GetMapping
     public  List<Student> getAllStudents() {
+//        throw new ApiRequestException("Oops cannot get all students with custom exception");
         return studentService.getAllStudents();
     }
 
     @PostMapping
-    public void addNewStudent(@RequestBody Student student) {
+    public void addNewStudent(@RequestBody @Valid Student student) {
         studentService.addNewStudent(student);
     }
 }
