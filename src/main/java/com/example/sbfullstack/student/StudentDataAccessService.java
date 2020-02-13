@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,6 +48,21 @@ public class StudentDataAccessService {
                 student.getLastName(),
                 student.getEmail(),
                 student.getGender().name().toUpperCase()
+        );
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    boolean isEmailTaken(String email) {
+        String sql = "" +
+                "SELECT EXISTS ( " +
+                " SELECT 1 " +
+                " FROM student " +
+                " WHERE email = ?" +
+                ")";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{email},
+                (resultSet, i) -> resultSet.getBoolean(1)
         );
     }
 
@@ -119,18 +133,51 @@ public class StudentDataAccessService {
         };
     }
 
-    boolean isEmailTaken(String email) {
+    int updateEmail(UUID studentId, String email) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET email = ? " +
+                "WHERE student_id = ?";
+        return jdbcTemplate.update(sql, email, studentId);
+    }
+
+    int updateFirstName(UUID studentId, String firstName) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET first_name = ? " +
+                "WHERE student_id = ?";
+        return jdbcTemplate.update(sql, firstName, studentId);
+    }
+
+    int updateLastName(UUID studentId, String lastName) {
+        String sql = "" +
+                "UPDATE student " +
+                "SET last_name = ? " +
+                "WHERE student_id = ?";
+        return jdbcTemplate.update(sql, lastName, studentId);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    boolean selectExistsEmail(UUID studentId, String email) {
         String sql = "" +
                 "SELECT EXISTS ( " +
-                " SELECT 1 " +
-                " FROM student " +
-                " WHERE email = ?" +
+                "   SELECT 1 " +
+                "   FROM student " +
+                "   WHERE student_id <> ? " +
+                "   AND email = ? " +
                 ")";
         return jdbcTemplate.queryForObject(
                 sql,
-                new Object[] {email},
-                (resultSet, i) -> resultSet.getBoolean(1)
+                new Object[]{studentId, email},
+                (resultSet, columnIndex) -> resultSet.getBoolean(1)
         );
+    }
+
+    int deleteStudentById(UUID studentId) {
+        String sql = "" +
+                "DELETE FROM student " +
+                "WHERE student_id = ?";
+        return jdbcTemplate.update(sql, studentId);
     }
 }
 

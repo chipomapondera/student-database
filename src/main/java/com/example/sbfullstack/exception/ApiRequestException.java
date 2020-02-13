@@ -1,4 +1,4 @@
-package com.example.sbfullstack.datasource.exception;
+package com.example.sbfullstack.exception;
 
 public class ApiRequestException extends RuntimeException {
 

@@ -15,6 +15,26 @@ public class StudentCourse {
     private final LocalDate endDate;
     private final Integer grade;
 
+    public StudentCourse(UUID studentId,
+                         UUID courseId,
+                         String name,
+                         String description,
+                         String department,
+                         String teacherName,
+                         LocalDate startDate,
+                         LocalDate endDate,
+                         Integer grade) {
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.name = name;
+        this.description = description;
+        this.department = department;
+        this.teacherName = teacherName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.grade = grade;
+    }
+
     public UUID getStudentId() {
         return studentId;
     }
@@ -49,17 +69,5 @@ public class StudentCourse {
 
     public String getTeacherName() {
         return teacherName;
-    }
-
-    public StudentCourse(UUID studentId, UUID courseId, String name, String description, String department, String teacherName, LocalDate startDate, LocalDate endDate, Integer grade) {
-        this.studentId = studentId;
-        this.courseId = courseId;
-        this.name = name;
-        this.description = description;
-        this.department = department;
-        this.teacherName = teacherName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.grade = grade;
     }
 }

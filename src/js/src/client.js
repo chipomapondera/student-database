@@ -28,3 +28,21 @@ export const addNewStudent = (student) => {
     })
     .then(checkStatus);
 }
+
+export const updateStudent = (studentId, student) => {
+    return fetch(`api/students/${studentId}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'PUT',
+        body: JSON.stringify(student)
+    })
+    .then(checkStatus);
+}
+
+export const deleteStudent = (studentId) => {
+    return fetch(`api/students/${studentId}`, {
+        method: 'DELETE'
+    })
+    .then(checkStatus);
+}

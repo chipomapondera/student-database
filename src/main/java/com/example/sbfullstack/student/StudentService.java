@@ -1,9 +1,10 @@
 package com.example.sbfullstack.student;
 
 import com.example.sbfullstack.EmailValidator;
-import com.example.sbfullstack.datasource.exception.ApiRequestException;
+import com.example.sbfullstack.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class StudentService {
         addNewStudent(null, student);
     }
 
-    private void addNewStudent(UUID studentId, Student student) {
+    void addNewStudent(UUID studentId, Student student) {
         UUID newStudentId = Optional.ofNullable(studentId)
                 .orElse(UUID.randomUUID());
 
@@ -47,5 +48,31 @@ public class StudentService {
 
     List<StudentCourse> getAllCoursesForStudent(UUID studentId) {
         return studentDataAccessService.selectAllStudentCourses(studentId);
+    }
+
+    public void updateStudent(UUID studentId, Student student) {
+        Optional.ofNullable(student.getEmail())
+                .ifPresent(email -> {
+                    boolean taken = studentDataAccessService.selectExistsEmail(studentId, email);
+                    if(!taken) {
+                        studentDataAccessService.updateEmail(studentId, email);
+                    } else {
+                        throw new IllegalStateException("Email already in use: " + student.getEmail());
+                    }
+                });
+
+        Optional.ofNullable(student.getFirstName())
+                .filter(firstName -> !StringUtils.isEmpty(firstName))
+                .map(StringUtils::capitalize)
+                .ifPresent(firstName -> studentDataAccessService.updateFirstName(studentId, firstName));
+
+        Optional.ofNullable(student.getLastName())
+                .filter(LastName -> !StringUtils.isEmpty(LastName))
+                .map(StringUtils::capitalize)
+                .ifPresent(LastName -> studentDataAccessService.updateLastName(studentId, LastName));
+    }
+
+    public void deleteStudent(UUID studentId) {
+        studentDataAccessService.deleteStudentById (studentId);
     }
 }
